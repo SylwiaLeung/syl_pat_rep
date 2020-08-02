@@ -36,7 +36,7 @@ class MathTestCase(unittest.TestCase):
         self.assertGreaterEqual(ComplexMathOperations.sqrt_of_sum_by_product(self.positive_numbers), 0,
                                 "Cannot be negative")
 
-    def test_smth
+
 if __name__ == '__main__':
     unittest.main()
     # def test_is_equal_zero(self):
