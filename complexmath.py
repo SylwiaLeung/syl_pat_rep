@@ -4,46 +4,48 @@
 # oblicza pierwiastek kwadratowy z: sumy zadanego jako argument ciągu liczb, podzielonej przez iloczyn tego ciągu
 # wyznacza medianę liczb, wymnożoną przez połowę PI i na końcu zwiększoną o stałą Epsilon
 
+from statistics import StatisticsError
 from statistics import median
 from numpy import prod
+import unittest
 import math
 import sys
-import unittest
 
 
 class ComplexMathOperations:
 
     @staticmethod
     def sqrt_of_sum_by_product(numbers: tuple) -> float:
-        try:
-            return math.sqrt(sum(numbers) / prod(numbers))
-        except ZeroDivisionError:
-            print("Cannot devide by 0")
+        if prod(numbers) <= 0:
+            raise ValueError('cannot find sqrt of a negative number or divide by 0')
+        return float("{:.3f}".format(math.sqrt(sum(numbers) / prod(numbers))))
 
     @staticmethod
-    def median_multiply_pi_add_epsilon(numbers: tuple) -> float:
-        return (median(numbers) * 0.5 * math.pi) + sys.float_info.epsilon
+    def median_multiply_add(numbers: tuple) -> float:
+        if not numbers:
+            raise StatisticsError('no median for empty data')
+        return float("{:.3f}".format((median(numbers) * 0.5 * math.pi) + sys.float_info.epsilon))
 
 
-class MathTestCase(unittest.TestCase):
-    positive_numbers = (2, 3, -5, 0, 7, 8, 9)
+class MyTestCase(unittest.TestCase):
+    def test_sqrt(self):
+        with self.assertRaises(ValueError) as context:
+            ComplexMathOperations.sqrt_of_sum_by_product((3, -5, 7, -8, 0, 9))
+            ComplexMathOperations.sqrt_of_sum_by_product((3, -5, 7, 8, 4, 9))
 
-    def test_none(self):
-        self.assertIsNotNone(ComplexMathOperations.sqrt_of_sum_by_product(self.positive_numbers))
-        self.assertIsNotNone(ComplexMathOperations.median_multiply_pi_add_epsilon(self.positive_numbers))
+        self.assertTrue('cannot find sqrt of a negative number or divide by 0' in str(context.exception))
+        self.assertEqual(ComplexMathOperations.sqrt_of_sum_by_product((2, 3, -5, 7, -8, 9)), 0.023)
+        self.assertEqual(ComplexMathOperations.sqrt_of_sum_by_product(()), 0.0)
 
-    def test_is_not_negative(self):
-        self.assertGreaterEqual(ComplexMathOperations.sqrt_of_sum_by_product(self.positive_numbers), 0,
-                                "Cannot be negative")
+    def test_median(self):
+        with self.assertRaises(StatisticsError) as context:
+            ComplexMathOperations.median_multiply_add(())
+
+        self.assertTrue('no median for empty data' in str(context.exception))
+        self.assertEqual(ComplexMathOperations.median_multiply_add((2, 3, -5, 0, 7, 8, 9)), 4.712)
+        self.assertEqual(ComplexMathOperations.median_multiply_add((0, )), 0.0)
+        self.assertEqual(ComplexMathOperations.median_multiply_add((-1,)), -1.571)
 
 
 if __name__ == '__main__':
     unittest.main()
-    # def test_is_equal_zero(self):
-    #     self.assertEqual("dobra robota", multiplication(0, 0, 0))
-    #
-    # def test_is_equal_negative(self):
-    #     self.assertEqual("dobra robota", multiplication(-1, 5, -5))
-    #
-    # def test_is_not_equal(self):
-    #     self.assertNotEqual("zle", multiplication(2, 5, 10))
