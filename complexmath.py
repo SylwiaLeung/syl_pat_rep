@@ -6,13 +6,13 @@
 
 from statistics import StatisticsError
 from statistics import median
-from numpy import prod
+from numpy import prod  # zmienić na math
 import unittest
 import math
 import sys
 
 
-class MyExeption(Exception):
+class MyExeption(Exception):  # zmienić nazwę
 
     def __init__(self, *args):
         if args:
@@ -33,8 +33,8 @@ class ComplexMathOperations:
     def sqrt_of_sum_by_product(numbers: tuple) -> float:
         if 0 in numbers:
             raise MyExeption
-        operation = sum(numbers) / prod(numbers)
-        if operation <= 0:
+        operation = sum(numbers) / prod(numbers)  # przejść jedną pętlę
+        if operation < 0:
             raise MyExeption
         return float("{:.3f}".format(math.sqrt(operation)))
 
@@ -42,10 +42,10 @@ class ComplexMathOperations:
     def median_multiply_add(numbers: tuple) -> float:
         if not numbers:
             raise StatisticsError('no median for empty data')
-        return float("{:.3f}".format((median(numbers) * 0.5 * math.pi) + sys.float_info.epsilon))
+        return float("{:.3f}".format(median(numbers) * 0.5 * math.pi + sys.float_info.epsilon))
 
 
-class MyTestCase(unittest.TestCase):
+class MyTestCase(unittest.TestCase):  # zmieniń nazwę na TestComplexMathOperstions i podzielić testowanie na dwie metody dla wyjątków osobno + wyrzucić testcase do osobnego pliku
     def test_sqrt(self):
         with self.assertRaises(MyExeption) as context:
             ComplexMathOperations.sqrt_of_sum_by_product((3, -5, 7, -8, 0, 9))
